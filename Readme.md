@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Марина Таова](https://up.htmlacademy.ru/javascript/5/user/72800).
-* Наставник: `Неизвестно`.
+* Наставник: Виталий Ртищев.
 
 ---
 
