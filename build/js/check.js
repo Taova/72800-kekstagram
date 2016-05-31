@@ -1,4 +1,4 @@
-function getMessage(a, b){
+function getMessage(a, b) {
   var sum = function(x, y) {
     return x + y;
   };
