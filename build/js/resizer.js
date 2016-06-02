@@ -82,7 +82,8 @@
     redraw: function() {
       // Очистка изображения.
       this._ctx.clearRect(0, 0, this._container.width, this._container.height);
-
+      this._ctx.beginPath();
+      this._ctx.fill('evenodd');
       // Параметры линии.
       // NB! Такие параметры сохраняются на время всего процесса отрисовки
       // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
@@ -125,8 +126,16 @@
       // следующий кадр рисовался с привычной системой координат, где точка
       // 0 0 находится в левом верхнем углу холста, в противном случае
       // некорректно сработает даже очистка холста или нужно будет использовать
-      // сложные рассчеты для координат прямоугольника, который нужно очистить.
+      // сложные рассчеты для координат прямоугольника, который нужно очистить.  
+
       this._ctx.restore();
+      this._ctx.fillStyle = 'white';
+      this._ctx.font = '18px Tahoma';
+      this._ctx.textBaseline = 'hanging';
+      this._ctx.fillText(this._image.naturalWidth + 'x' + this._image.naturalHeight, this._container.height / 2, 15);
+      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      this._ctx.fillRect(0, 0, this._container.width, this._container.height);
+      this._ctx.closePath();
     },
 
     /**
