@@ -80,8 +80,6 @@
      * Отрисовка канваса.
      */
     redraw: function() {
-      this._ctx.beginPath();
-      this._ctx.fill('evenodd');
       // Очистка изображения.
       this._ctx.clearRect(0, 0, this._container.width, this._container.height);
       // Параметры линии.
@@ -115,7 +113,7 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-
+      
       this._ctx.strokeRect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
@@ -129,14 +127,21 @@
       // некорректно сработает даже очистка холста или нужно будет использовать
       // сложные рассчеты для координат прямоугольника, который нужно очистить.  
 
-      this._ctx.restore();
-      
+      // this._ctx.restore();
+      this._ctx.beginPath();
+      this._ctx.fill('evenodd');
       this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
       this._ctx.lineTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
       this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
       this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2);
+      this._ctx.fillStyle = 'transparent';
       this._ctx.fillStyle = 'red';
       this._ctx.fill();
+      this._ctx.restore();
+      this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
+      this._ctx.lineTo(-this._resizeConstraint.x, -this._resizeConstraint.y);
+      this._ctx.strokeStyle = 'white';
+      this._ctx.stroke();
       this._ctx.restore();
       this._ctx.fillStyle = 'white';
       this._ctx.font = '18px Tahoma';
