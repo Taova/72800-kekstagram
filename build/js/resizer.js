@@ -80,10 +80,10 @@
      * Отрисовка канваса.
      */
     redraw: function() {
-      // Очистка изображения.
-      this._ctx.clearRect(0, 0, this._container.width, this._container.height);
       this._ctx.beginPath();
       this._ctx.fill('evenodd');
+      // Очистка изображения.
+      this._ctx.clearRect(0, 0, this._container.width, this._container.height);
       // Параметры линии.
       // NB! Такие параметры сохраняются на время всего процесса отрисовки
       // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
@@ -102,7 +102,7 @@
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
       this._ctx.save();
-
+      
       // Установка начальной точки системы координат в центр холста.
       this._ctx.translate(this._container.width / 2, this._container.height / 2);
 
@@ -115,6 +115,7 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
+
       this._ctx.strokeRect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
@@ -129,12 +130,18 @@
       // сложные рассчеты для координат прямоугольника, который нужно очистить.  
 
       this._ctx.restore();
+      
+      this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
+      this._ctx.lineTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
+      this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
+      this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2);
+      this._ctx.fillStyle = 'red';
+      this._ctx.fill();
+      this._ctx.restore();
       this._ctx.fillStyle = 'white';
       this._ctx.font = '18px Tahoma';
       this._ctx.textBaseline = 'hanging';
       this._ctx.fillText(this._image.naturalWidth + 'x' + this._image.naturalHeight, this._container.height / 2, 15);
-      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      this._ctx.fillRect(0, 0, this._container.width, this._container.height);
       this._ctx.closePath();
     },
 
