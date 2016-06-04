@@ -129,25 +129,27 @@
 
       // this._ctx.restore();
       this._ctx.beginPath();
-      this._ctx.fill('evenodd');
       this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
       this._ctx.lineTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
       this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
       this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2);
-      this._ctx.fillStyle = 'transparent';
-      this._ctx.fillStyle = 'red';
-      this._ctx.fill();
       this._ctx.restore();
-      this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
-      this._ctx.lineTo(-this._resizeConstraint.x, -this._resizeConstraint.y);
-      this._ctx.strokeStyle = 'white';
-      this._ctx.stroke();
-      this._ctx.restore();
-      this._ctx.fillStyle = 'white';
-      this._ctx.font = '18px Tahoma';
-      this._ctx.textBaseline = 'hanging';
-      this._ctx.fillText(this._image.naturalWidth + 'x' + this._image.naturalHeight, this._container.height / 2, 15);
+
+      this._ctx.moveTo(0, 0);
+      this._ctx.lineTo(0, this._container.height);
+      this._ctx.lineTo(this._container.width, this._container.height);
+      this._ctx.lineTo(this._container.width, 0);
+      this._ctx.lineTo(0, 0);      
+      this._ctx.fillStyle = 'rgba(0, 0, 0, .8)';
+      this._ctx.fill('evenodd');
       this._ctx.closePath();
+      this._ctx.restore();
+
+      this._ctx.fillStyle = '#fff';
+      this._ctx.font = '16px sans';
+      this._ctx.textBaseline = 'hanging';
+      this._ctx.fillText(this._image.naturalWidth + 'x' + this._image.naturalHeight, this._container.width / 2 - 30, 20);
+      this._ctx.restore();
     },
 
     /**
