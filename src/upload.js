@@ -83,7 +83,7 @@
     submitButton = formResize.querySelector('#resize-fwd');
 
   var toNumber = function(num) {
-    return parseInt('' + num, 10);
+    return parseInt(num, 10);
   };
   /** Проверяем данные на следующие критерии:
   Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
