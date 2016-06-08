@@ -66,15 +66,47 @@
     var randomImageNumber = Math.round(Math.random() * (images.length - 1));
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
+  var
+    formResize = document.querySelector('#upload-resize'),
+    resizeInputs = formResize.querySelectorAll('input');
 
+  for (var i = 0; i < resizeInputs.length; i++) {
+    resizeInputs[i].addEventListener('onchange', validate);
+  }
   /**
    * Проверяет, валидны ли данные, в форме кадрирования.
-   * @return {boolean}
-   */
-  function resizeFormIsValid() {
-    return true;
-  }
+  */
+  var
+    resizeXField = formResize.querySelector('#resize-x'),
+    resizeYField = formResize.querySelector('#resize-y'),
+    resizeSize = formResize.querySelector('#resize-size'),
+    submitButton = formResize.querySelector('#resize-fwd');
 
+  var toNumber = function(num) {
+    return parseInt(num);
+  };
+  /** Проверяем данные на следующие критерии:
+  Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
+  Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
+  Поля «сверху» и «слева» не могут быть отрицательными.
+  */
+  var validate = function() {
+    if ((toNumber(resizeXField.value) + toNumber(resizeSize.value) > currentResizer._image.naturalWidth)
+    || (toNumber(resizeYField.value) + toNumber(resizeSize.value) > currentResizer._image.naturalHeigh)
+    || (toNumber(resizeXField.value) < 0)
+    || (toNumber(resizeYField.value) < 0)) {
+
+      submitButton.setAttribute('disabled', 'true');
+      submitButton.classList.add('btn-disabled');
+
+      return false;
+    } else {
+      submitButton.removeAttribute('disabled');
+      submitButton.classList.remove('btn-disabled');
+
+      return true;
+    }
+  };
   /**
    * Форма загрузки изображения.
    * @type {HTMLFormElement}
@@ -194,7 +226,7 @@
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
 
-    if (resizeFormIsValid()) {
+    if (validate()) {
       filterImage.src = currentResizer.exportImage().src;
 
       resizeForm.classList.add('invisible');

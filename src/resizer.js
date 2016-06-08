@@ -100,7 +100,6 @@
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
       this._ctx.save();
-      
       // Установка начальной точки системы координат в центр холста.
       this._ctx.translate(this._container.width / 2, this._container.height / 2);
 
@@ -113,20 +112,17 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-      
       this._ctx.strokeRect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2);
-
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
       // следующий кадр рисовался с привычной системой координат, где точка
       // 0 0 находится в левом верхнем углу холста, в противном случае
       // некорректно сработает даже очистка холста или нужно будет использовать
-      // сложные рассчеты для координат прямоугольника, который нужно очистить.  
-
+      // сложные рассчеты для координат прямоугольника, который нужно очистить.
       // this._ctx.restore();
       this._ctx.beginPath();
       this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
@@ -139,7 +135,7 @@
       this._ctx.lineTo(0, this._container.height);
       this._ctx.lineTo(this._container.width, this._container.height);
       this._ctx.lineTo(this._container.width, 0);
-      this._ctx.lineTo(0, 0);      
+      this._ctx.lineTo(0, 0);
       this._ctx.fillStyle = 'rgba(0, 0, 0, .8)';
       this._ctx.fill('evenodd');
       this._ctx.closePath();
