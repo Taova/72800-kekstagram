@@ -9,14 +9,13 @@
 /**
   * Подключение зависимости библиотеки browser-cookies в переменную
   */
-var browserCookies = require('browser-cookies.js');
-
+var browserCookies = require('browser-cookies');
 /**
   * Преобразование в строку
   */
 var toString = function(str) {
-  return ''+str;
-}
+  return '' + str;
+};
 /**
   * Функция сохранения в cookies последний выбранный фильтр:
   * «Оригинал», «Хром» или «Сепия»
@@ -24,7 +23,8 @@ var toString = function(str) {
 function saveSelectFilter() {
   var selectFilter = document.querySelector('.upload-filter-controls input:checked');
   var dateToExpires = new Date(Date.now() + getTimeNearBirthDay()).toUTCString();
-  browserCookies.set('filter', toString(selectFilter.value), dateToExpires);
+  browserCookies.set('filter', toString(selectFilter.value), {expires: dateToExpires});
+  // console.log(browserCookies.set('filter', toString(selectFilter.value), {expires: dateToExpires}));
 }
 
 /**
@@ -50,7 +50,6 @@ function getTimeNearBirthDay() {
   }
   return nowDate - BIRTHDAY_DATE;
 }
-saveSelectFilter();
 (function() {
   /** @enum {string} */
   var FileType = {
@@ -115,7 +114,7 @@ saveSelectFilter();
     resizeInputs = formResize.querySelectorAll('input');
 
   for (var i = 0; i < resizeInputs.length; i++) {
-    resizeInputs[i].addEventListener('onchange', validate);
+    resizeInputs[i].addEventListener('change', validate);
   }
   /**
    * Проверяет, валидны ли данные, в форме кадрирования.
@@ -296,6 +295,7 @@ saveSelectFilter();
    */
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
+    saveSelectFilter();
 
     cleanupResizer();
     updateBackground();
@@ -329,7 +329,16 @@ saveSelectFilter();
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
   };
+  //Устанавливаем фильтр, записанный в cookies, по умолчанию.
+  function setDefaultFilter() {
+    var controls = document.querySelector('.upload-filter-controls');
+    var filterName = browserCookies.get('filter') || 'none';
+    var filterSelected = controls.querySelector('#upload-filter-' + filterName);
 
+    filterSelected.setAttribute('checked', true);
+
+  }
+  setDefaultFilter();
   cleanupResizer();
   updateBackground();
 })();
