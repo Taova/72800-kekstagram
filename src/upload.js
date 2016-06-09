@@ -6,7 +6,51 @@
  */
 
 'use strict';
+/**
+  * Подключение зависимости библиотеки browser-cookies в переменную
+  */
+var browserCookies = require('browser-cookies.js');
 
+/**
+  * Преобразование в строку
+  */
+var toString = function(str) {
+  return ''+str;
+}
+/**
+  * Функция сохранения в cookies последний выбранный фильтр:
+  * «Оригинал», «Хром» или «Сепия»
+  */
+function saveSelectFilter() {
+  var selectFilter = document.querySelector('.upload-filter-controls input:checked');
+  var dateToExpires = new Date(Date.now() + getTimeNearBirthDay()).toUTCString();
+  browserCookies.set('filter', toString(selectFilter.value), dateToExpires);
+}
+
+/**
+  * Дата рождения @constant {date}
+  * Month от 0(ЯНВ) до 11 (ДЕК)
+  */
+var BIRTHDAY_DATE = new Date('1991', '3', '23');
+
+/**
+  * Функция вычисления количества дней с ближайщего дня рождения
+  */
+function getTimeNearBirthDay() {
+  var nowDate = new Date();
+  nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+  if (nowDate.getMonth() >= BIRTHDAY_DATE.getMonth()) {
+    if (nowDate.getDate() >= BIRTHDAY_DATE.getDate()) {
+      BIRTHDAY_DATE.setFullYear(nowDate.getFullYear());
+    } else {
+      BIRTHDAY_DATE.setFullYear(nowDate.getFullYear() - 1);
+    }
+  } else {
+    BIRTHDAY_DATE.setFullYear(nowDate.getFullYear() - 1);
+  }
+  return nowDate - BIRTHDAY_DATE;
+}
+saveSelectFilter();
 (function() {
   /** @enum {string} */
   var FileType = {
