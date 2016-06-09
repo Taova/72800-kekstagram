@@ -109,21 +109,23 @@ function getTimeNearBirthDay() {
     var randomImageNumber = Math.round(Math.random() * (images.length - 1));
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
-  var
-    formResize = document.querySelector('#upload-resize'),
-    resizeInputs = formResize.querySelectorAll('input');
+  var formResize = document.querySelector('#upload-resize');
 
-  for (var i = 0; i < resizeInputs.length; i++) {
-    resizeInputs[i].addEventListener('change', validate);
-  }
+  formResize.onchange = function(event) {
+    var target = event.target;
+    if (!target.is('input')) {
+      return;
+    }
+    validate();
+  };
+
   /**
-   * Проверяет, валидны ли данные, в форме кадрирования.
-  */
-  var
-    resizeXField = formResize.querySelector('#resize-x'),
-    resizeYField = formResize.querySelector('#resize-y'),
-    resizeSize = formResize.querySelector('#resize-size'),
-    submitButton = formResize.querySelector('#resize-fwd');
+    * Проверяет, валидны ли данные, в форме кадрирования.
+    */
+  var resizeXField = formResize.querySelector('#resize-x');
+  var resizeYField = formResize.querySelector('#resize-y');
+  var resizeSize = formResize.querySelector('#resize-size');
+  var submitButton = formResize.querySelector('#resize-fwd');
 
   var toNumber = function(num) {
     return parseInt(num, 10);
@@ -143,12 +145,12 @@ function getTimeNearBirthDay() {
       submitButton.classList.add('btn-disabled');
 
       return false;
-    } else {
-      submitButton.removeAttribute('disabled');
-      submitButton.classList.remove('btn-disabled');
-
-      return true;
     }
+
+    submitButton.removeAttribute('disabled');
+    submitButton.classList.remove('btn-disabled');
+
+    return true;
   };
   /**
    * Форма загрузки изображения.
