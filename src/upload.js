@@ -6,7 +6,50 @@
  */
 
 'use strict';
+/**
+  * Подключение зависимости библиотеки browser-cookies в переменную
+  */
+var browserCookies = require('browser-cookies');
+/**
+  * Преобразование в строку
+  */
+var toString = function(str) {
+  return '' + str;
+};
+/**
+  * Функция сохранения в cookies последний выбранный фильтр:
+  * «Оригинал», «Хром» или «Сепия»
+  */
+function saveSelectFilter() {
+  var selectFilter = document.querySelector('.upload-filter-controls input:checked');
+  var dateToExpires = new Date(Date.now() + getTimeNearBirthDay()).toUTCString();
+  browserCookies.set('filter', toString(selectFilter.value), {expires: dateToExpires});
+  // console.log(browserCookies.set('filter', toString(selectFilter.value), {expires: dateToExpires}));
+}
 
+/**
+  * Дата рождения @constant {date}
+  * Month от 0(ЯНВ) до 11 (ДЕК)
+  */
+var BIRTHDAY_DATE = new Date('1991', '3', '23');
+
+/**
+  * Функция вычисления количества дней с ближайщего дня рождения
+  */
+function getTimeNearBirthDay() {
+  var nowDate = new Date();
+  nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+  if (nowDate.getMonth() >= BIRTHDAY_DATE.getMonth()) {
+    if (nowDate.getDate() >= BIRTHDAY_DATE.getDate()) {
+      BIRTHDAY_DATE.setFullYear(nowDate.getFullYear());
+    } else {
+      BIRTHDAY_DATE.setFullYear(nowDate.getFullYear() - 1);
+    }
+  } else {
+    BIRTHDAY_DATE.setFullYear(nowDate.getFullYear() - 1);
+  }
+  return nowDate - BIRTHDAY_DATE;
+}
 (function() {
   /** @enum {string} */
   var FileType = {
@@ -66,15 +109,49 @@
     var randomImageNumber = Math.round(Math.random() * (images.length - 1));
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
+  var formResize = document.querySelector('#upload-resize');
+
+  formResize.onchange = function(event) {
+    var target = event.target;
+    if (!target.is('input')) {
+      return;
+    }
+    validate();
+  };
 
   /**
-   * Проверяет, валидны ли данные, в форме кадрирования.
-   * @return {boolean}
-   */
-  function resizeFormIsValid() {
-    return true;
-  }
+    * Проверяет, валидны ли данные, в форме кадрирования.
+    */
+  var resizeXField = formResize.querySelector('#resize-x');
+  var resizeYField = formResize.querySelector('#resize-y');
+  var resizeSize = formResize.querySelector('#resize-size');
+  var submitButton = formResize.querySelector('#resize-fwd');
 
+  var toNumber = function(num) {
+    return parseInt(num, 10);
+  };
+  /** Проверяем данные на следующие критерии:
+  Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
+  Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
+  Поля «сверху» и «слева» не могут быть отрицательными.
+  */
+  var validate = function() {
+    if ((toNumber(resizeXField.value) + toNumber(resizeSize.value) > currentResizer._image.naturalWidth)
+    || (toNumber(resizeYField.value) + toNumber(resizeSize.value) > currentResizer._image.naturalHeigh)
+    || (toNumber(resizeXField.value) < 0)
+    || (toNumber(resizeYField.value) < 0)) {
+
+      submitButton.setAttribute('disabled', 'true');
+      submitButton.classList.add('btn-disabled');
+
+      return false;
+    }
+
+    submitButton.removeAttribute('disabled');
+    submitButton.classList.remove('btn-disabled');
+
+    return true;
+  };
   /**
    * Форма загрузки изображения.
    * @type {HTMLFormElement}
@@ -194,7 +271,7 @@
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
 
-    if (resizeFormIsValid()) {
+    if (validate()) {
       filterImage.src = currentResizer.exportImage().src;
 
       resizeForm.classList.add('invisible');
@@ -220,6 +297,7 @@
    */
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
+    saveSelectFilter();
 
     cleanupResizer();
     updateBackground();
@@ -253,7 +331,16 @@
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
   };
+  //Устанавливаем фильтр, записанный в cookies, по умолчанию.
+  function setDefaultFilter() {
+    var controls = document.querySelector('.upload-filter-controls');
+    var filterName = browserCookies.get('filter') || 'none';
+    var filterSelected = controls.querySelector('#upload-filter-' + filterName);
 
+    filterSelected.setAttribute('checked', true);
+
+  }
+  setDefaultFilter();
   cleanupResizer();
   updateBackground();
 })();
