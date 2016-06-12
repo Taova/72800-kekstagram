@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<form class="filters hidden" action="index.html" method="get">
+<form class="filters" action="index.html" method="get">
   <input type="radio" id="filter-popular" class="filters-radio" name="filter" value="popular" checked>
   <label for="filter-popular" class="filters-item">Популярные</label>
 
@@ -87,6 +87,17 @@
     </span>
   </a>
 </template>
+
+<script>
+  var pictures = [];
+  /**
+    * @param {data:Array} <Object>
+    */
+  var __picturesLoadCallback = function (data) {
+    pictures = data;
+  }
+</script>
+<script src="//up.htmlacademy.ru/assets/js_intensive/jsonp/pictures.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
