@@ -16,7 +16,7 @@ if ('content' in templateElement) {
  * @param {HTMLElement} container
  * @return {HTMLElement}
  */
-var getPictureElement = function(data, container) {
+function getPictureElement(data, container) {
   formFilters.classList.remove('hidden');
 	var element = elementToClone.cloneNode(true);
   var elemImg = element.querySelector('img');
@@ -24,8 +24,7 @@ var getPictureElement = function(data, container) {
   element.querySelector('.picture-likes').textContent = data.likes;
   container.appendChild(element);
 
-	var elemImgData = new Image(182, 182);
-
+	var elemImgData = new Image();
 	elemImgData.onload = function() {
 		elemImg.src = elemImgData.src;
 		elemImgData.width = 182;
@@ -36,7 +35,7 @@ var getPictureElement = function(data, container) {
 	};
   elemImgData.src = data.url;
 	return element;
-};
+}
 
 window.pictures.forEach( function(picture) {
 	getPictureElement(picture, picturesContainer);
