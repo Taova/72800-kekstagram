@@ -1,10 +1,11 @@
 'use strict';
-var formFilters = document.querySelector('form.filters');
-formFilters.classList.add('hidden');
+var formFilters = document.querySelector('.filters');
 
 var picturesContainer = document.querySelector('.pictures');
 var templateElement = document.querySelector('#picture-template');
 var elementToClone;
+
+formFilters.classList.add('hidden');
 
 if ('content' in templateElement) {
   elementToClone = templateElement.content.querySelector('.picture');
