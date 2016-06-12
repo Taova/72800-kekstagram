@@ -111,7 +111,7 @@ function getTimeNearBirthDay() {
   }
   var formResize = document.querySelector('#upload-resize');
 
-  formResize.onchange = function(event) {
+  formResize.change = function(event) {
     var target = event.target;
     if (!target.is('input')) {
       return;
@@ -264,19 +264,22 @@ function getTimeNearBirthDay() {
   };
 
   /**
+   * Обработка валидации данных инпута.
+   */
+  resizeForm.onchange = function() {
+    if (validate()) {
+      filterImage.src = currentResizer.exportImage().src;
+    }
+  };
+  /**
    * Обработка отправки формы кадрирования. Если форма валидна, экспортирует
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
-
-    if (validate()) {
-      filterImage.src = currentResizer.exportImage().src;
-
-      resizeForm.classList.add('invisible');
-      filterForm.classList.remove('invisible');
-    }
+    resizeForm.classList.add('invisible');
+    filterForm.classList.remove('invisible');
   };
 
   /**
