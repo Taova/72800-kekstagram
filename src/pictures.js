@@ -1,5 +1,5 @@
 'use strict';
-
+/*global pictures*/
 /** @constant {string} */
 var PICTURES_LOAD_URL = '//o0.github.io/assets/json/pictures.json';
 /** @constant {string} */
