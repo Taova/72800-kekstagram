@@ -68,7 +68,7 @@ var renderPictures = function(pictures) {
 };
 
 getPictures(function(loadedPictures) {
-  pictures = loadedPictures;
+  window.pictures = loadedPictures;
   setFiltrationImg();
   renderPictures(pictures);
 });
@@ -96,7 +96,7 @@ var setFiltrationImgId = function(filter) {
 //  * @param {string} filter
 //  */
 var getFilterPictures = function(pictures, filter) {
-  var picturesToFilter = pictures.slice(0);
+  var picturesToFilter = window.pictures.slice(0);
 
   switch (filter) {
     case 'filter-popular':
