@@ -70,7 +70,7 @@ var renderPictures = function(pictures) {
 getPictures(function(loadedPictures) {
   window.pictures = loadedPictures;
   setFiltrationImg();
-  renderPictures(pictures);
+  renderPictures(window.pictures);
 });
 // // Список изображений изменяется  в зависимости переданных значаний filter
 // /** @param {string} filter */
@@ -99,28 +99,20 @@ var getFilterPictures = function(pictures, filter) {
   var picturesToFilter = window.pictures.slice(0);
 
   switch (filter) {
-    case 'filter-popular':
-      return picturesToFilter;
-      break;
     case 'filter-new':
-      var newFilterImg = picturesToFilter.filter(function(item) {
-        var newDate = new Date();
-        var imgDateArray = item.date.split('-');
-        var imgDate = new Date(imgDateArray);
-        if ((newDate - imgDate) <= 4 * 24 * 60 * 60 * 1000) {
-          return item;
-        }
+      picturesToFilter = picturesToFilter.filter(function(a) {
+        var lastFourDay = 4 * 24 * 60 * 60 * 1000;
+        var imgDate = new Date(a.date);
+        return imgDate >= (Date.now() - lastFourDay) && imgDate < Date.now();
       });
-      newFilterImg.sort(function(a, b) {
-        a = new Date(a.date.split('-'));
-        b = new Date(b.date.split('-'));
-        return b - a;
+      picturesToFilter.sort(function(a, b) {
+        return new Date(b.date) - new Date(a.date);
       });
-      return newFilterImg;
+      console.log(picturesToFilter);
       break;
     case 'filter-discussed':
       picturesToFilter.sort(function(a, b) {
-        return a.comments - b.comments;
+        return b.comments - a.comments;
       });
       break;
   }
