@@ -1,9 +1,18 @@
 'use strict';
 /*global pictures*/
+var pictures = [];
+/*global filterImage*/
+var filterImage = [];
 /** @constant {string} */
 var PICTURES_LOAD_URL = '//o0.github.io/assets/json/pictures.json';
 /** @constant {string} */
 var ACTIVE_FILTER_CLASSNAME = 'filter-active';
+/** @constant {number} */
+var PAGE_SIZE = 12;
+/** @type {number} */
+var pageNumber = 0;
+/** @constant {Filter} */
+var DEFAULT_FILTER = 'filter-popular';
 
 var formFilters = document.querySelector('form.filters');
 formFilters.classList.add('hidden');
@@ -59,10 +68,16 @@ var getPictures = function(callback) {
   xhr.send();
 };
 
-/** @param {Array.<Object>} pictures */
-var renderPictures = function(pictures) {
+/** @param {Array.<Object>} pictures
+  * @param {number} page
+  */
+var renderPictures = function(pictures, page) {
   picturesContainer.innerHTML = '';
-  pictures.forEach(function(picture) {
+  
+  var from = page * PAGE_SIZE;
+  var to = from + PAGE_SIZE;
+
+  pictures.slice(from, to).forEach(function(picture) {
     getPictureElement(picture, picturesContainer);
   });
 };
@@ -70,19 +85,21 @@ var renderPictures = function(pictures) {
 getPictures(function(loadedPictures) {
   window.pictures = loadedPictures;
   setFiltrationImg();
-  renderPictures(window.pictures);
+  setFiltrationImgId(DEFAULT_FILTER);
+  // renderPictures(window.pictures, 0);
 });
 // // Список изображений изменяется  в зависимости переданных значаний filter
 // /** @param {string} filter */
 var setFiltrationImgId = function(filter) {
-  var filterImage = getFilterPictures(pictures, filter);
+  filterImage = getFilterPictures(pictures, filter);
   if (filterImage.length === 0) {
     console.log(pictures);
     sendEmptyBlock('no-filters', divContainer);
   } else{
     divContainer.innerHTML = '';
   }
-  renderPictures(filterImage);
+  pageNumber = 0;
+  renderPictures(filterImage, pageNumber);
 
   var activeFilter = formFilters.querySelector('.' + ACTIVE_FILTER_CLASSNAME);
   if (activeFilter) {
@@ -138,3 +155,34 @@ var sendEmptyBlock = function(filterclass, container) {
   container.appendChild(div);
   console.log(div);
 };
+/** @return {boolean} */
+var isBottomReached = function() {
+  var GAP = 100;
+  var pageY = window.pageYOffset || document.documentElement.scrollTop;
+  var innerHeight = document.documentElement.clientHeight;
+  // console.log(pageY -innerHeight - GAP);
+  // return pageY -innerHeight - GAP <= 0; 
+  return true;
+};
+
+/** @param {Array} pictures
+  * @param {number} page
+  * @param {number} pagesize
+  * @return {boolean}
+  */
+var isNextPageAvailable = function (pictures, page, pagesize) {
+  return true;
+  // return page < Math.ceil(pictures.length / pagesize);
+};
+
+var setScroll = function () {
+  window.addEventListener('scroll', function(evt) {
+    if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+      pageNumber++;
+      console.log(pageNumber++);
+      renderPictures(filterImage, pageNumber);
+    }
+  });
+};
+
+setScroll();
