@@ -1,7 +1,6 @@
 'use strict';
-/*global pictures*/
-var pictures = [];
-/*global filterImage*/
+/* global pictures*/
+/** @type {Array.<Object>} */
 var filterImage = [];
 /** @constant {string} */
 var PICTURES_LOAD_URL = '//o0.github.io/assets/json/pictures.json';
@@ -13,6 +12,8 @@ var PAGE_SIZE = 12;
 var pageNumber = 0;
 /** @constant {Filter} */
 var DEFAULT_FILTER = 'filter-popular';
+/** @constant {number} */
+var THROTTLE_DELAY = 100;
 
 var formFilters = document.querySelector('form.filters');
 formFilters.classList.add('hidden');
@@ -68,38 +69,60 @@ var getPictures = function(callback) {
   xhr.send();
 };
 
+var setScrollEnabled = function() {
+  var lastCall = Date.now();
+
+  window.addEventListener('scroll', function() {
+    if (Date.now() - lastCall >= THROTTLE_DELAY) {
+      if (isBottomReached() &&
+        isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+        pageNumber++;
+        renderPictures(filterImage, pageNumber);
+      }
+      lastCall = Date.now();
+    }
+  });
+};
+
 /** @param {Array.<Object>} pictures
   * @param {number} page
   */
-var renderPictures = function(pictures, page) {
-  picturesContainer.innerHTML = '';
-  
+var renderPictures = function(pictures, page, replace) {
+  if (replace) {
+    picturesContainer.innerHTML = '';
+  }
+
   var from = page * PAGE_SIZE;
   var to = from + PAGE_SIZE;
 
   pictures.slice(from, to).forEach(function(picture) {
     getPictureElement(picture, picturesContainer);
   });
+
+  // Если страница не заполненна
+  if (document.documentElement.scrollHeight === document.documentElement.clientHeight) {
+    pageNumber++;
+    renderPictures(pictures, pageNumber, false);
+  }
 };
 
 getPictures(function(loadedPictures) {
   window.pictures = loadedPictures;
   setFiltrationImg();
   setFiltrationImgId(DEFAULT_FILTER);
-  // renderPictures(window.pictures, 0);
+  setScrollEnabled();
 });
 // // Список изображений изменяется  в зависимости переданных значаний filter
 // /** @param {string} filter */
 var setFiltrationImgId = function(filter) {
   filterImage = getFilterPictures(pictures, filter);
   if (filterImage.length === 0) {
-    console.log(pictures);
     sendEmptyBlock('no-filters', divContainer);
   } else{
     divContainer.innerHTML = '';
   }
   pageNumber = 0;
-  renderPictures(filterImage, pageNumber);
+  renderPictures(filterImage, pageNumber, true);
 
   var activeFilter = formFilters.querySelector('.' + ACTIVE_FILTER_CLASSNAME);
   if (activeFilter) {
@@ -125,7 +148,6 @@ var getFilterPictures = function(pictures, filter) {
       picturesToFilter.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       });
-      console.log(picturesToFilter);
       break;
     case 'filter-discussed':
       picturesToFilter.sort(function(a, b) {
@@ -137,12 +159,11 @@ var getFilterPictures = function(pictures, filter) {
 };
 // // Функция добавит обработчики клика элементам фильтра
 var setFiltrationImg = function() {
-  var filtersName = formFilters.querySelectorAll('.filters-radio');
-  for (var i = 0; i < filtersName.length; i++) {
-    filtersName[i].onclick = function() {
-      setFiltrationImgId(this.id);
-    };
-  }
+  formFilters.addEventListener('click', function(evt) {
+    if (evt.target.classList.contains('filters-radio')) {
+      setFiltrationImgId(evt.target.id);
+    }
+  });
 };
 // /**
 //  * @param {string>} class
@@ -153,16 +174,13 @@ var sendEmptyBlock = function(filterclass, container) {
   div.classList.add(filterclass);
   div.textContent = 'ERROR';
   container.appendChild(div);
-  console.log(div);
 };
 /** @return {boolean} */
 var isBottomReached = function() {
   var GAP = 100;
-  var pageY = window.pageYOffset || document.documentElement.scrollTop;
-  var innerHeight = document.documentElement.clientHeight;
-  // console.log(pageY -innerHeight - GAP);
-  // return pageY -innerHeight - GAP <= 0; 
-  return true;
+  var footerElement = document.querySelector('footer');
+  var footerPosition = footerElement.getBoundingClientRect();
+  return footerPosition.top - window.innerHeight - GAP <= 0;
 };
 
 /** @param {Array} pictures
@@ -170,19 +188,6 @@ var isBottomReached = function() {
   * @param {number} pagesize
   * @return {boolean}
   */
-var isNextPageAvailable = function (pictures, page, pagesize) {
-  return true;
-  // return page < Math.ceil(pictures.length / pagesize);
+var isNextPageAvailable = function(pictures, page, pagesize) {
+  return page < Math.ceil(pictures.length / pagesize);
 };
-
-var setScroll = function () {
-  window.addEventListener('scroll', function(evt) {
-    if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
-      pageNumber++;
-      console.log(pageNumber++);
-      renderPictures(filterImage, pageNumber);
-    }
-  });
-};
-
-setScroll();
