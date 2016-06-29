@@ -191,7 +191,6 @@ function getTimeNearBirthDay() {
       case Action.UPLOADING:
         message = message || 'Кексограмим&hellip;';
         break;
-
       case Action.ERROR:
         isError = true;
         message = message || 'Неподдерживаемый формат файла<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
@@ -348,11 +347,11 @@ function getTimeNearBirthDay() {
    * из объекта resizer и добавляет в формую
    */
   window.addEventListener('resizerchange', function() {
-     var resizer = currentResizer.getConstraint();
-     resizeXField.value = resizer.x;
-     resizeYField.value = resizer.y;
-     resizeSize.value = resizer.side;
-   });
+    var resizer = currentResizer.getConstraint();
+    resizeXField.value = resizer.x;
+    resizeYField.value = resizer.y;
+    resizeSize.value = resizer.side;
+  });
   /**делегирование событий resizeXField resizeYField resizeSize*/
 
   resizeForm.addEventListener('input', function(evt) {
@@ -362,13 +361,12 @@ function getTimeNearBirthDay() {
         break;
       case 'size':
         var resizer = currentResizer.getConstraint();
-        var newX = toNumber(resizeXField.value) + (toNumber(resizer.side) -toNumber(resizeSize.value)) / 2;
-        var newY = toNumber(resizeYField.value) + (toNumber(resizer.side) -toNumber(resizeSize.value)) / 2;
+        var newX = toNumber(resizeXField.value) + (toNumber(resizer.side) - toNumber(resizeSize.value)) / 2;
+        var newY = toNumber(resizeYField.value) + (toNumber(resizer.side) - toNumber(resizeSize.value)) / 2;
         currentResizer.setConstraint(newX, newY, toNumber(resizeSize.value));
         break;
     }
   });
-  
 
   cleanupResizer();
   updateBackground();
