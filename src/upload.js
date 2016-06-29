@@ -1,5 +1,4 @@
 /* global Resizer: true */
-
 /**
  * @fileoverview
  * @author Igor Alexeenko (o0)
@@ -192,7 +191,6 @@ function getTimeNearBirthDay() {
       case Action.UPLOADING:
         message = message || 'Кексограмим&hellip;';
         break;
-
       case Action.ERROR:
         isError = true;
         message = message || 'Неподдерживаемый формат файла<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
@@ -216,7 +214,7 @@ function getTimeNearBirthDay() {
    * и показывается форма кадрирования.
    * @param {Event} evt
    */
-  uploadForm.onchange = function(evt) {
+  uploadForm.addEventListener('change', function(evt) {
     var element = evt.target;
     if (element.id === 'upload-file') {
       // Проверка типа загружаемого файла, тип должен быть изображением
@@ -226,7 +224,7 @@ function getTimeNearBirthDay() {
 
         showMessage(Action.UPLOADING);
 
-        fileReader.onload = function() {
+        fileReader.addEventListener('load', function() {
           cleanupResizer();
 
           currentResizer = new Resizer(fileReader.result);
@@ -237,7 +235,7 @@ function getTimeNearBirthDay() {
           resizeForm.classList.remove('invisible');
 
           hideMessage();
-        };
+        });
 
         fileReader.readAsDataURL(element.files[0]);
       } else {
@@ -246,14 +244,14 @@ function getTimeNearBirthDay() {
         showMessage(Action.ERROR);
       }
     }
-  };
+  });
 
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt
    */
-  resizeForm.onreset = function(evt) {
+  resizeForm.addEventListener('reset', function(evt) {
     evt.preventDefault();
 
     cleanupResizer();
@@ -261,44 +259,44 @@ function getTimeNearBirthDay() {
 
     resizeForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Обработка валидации данных инпута.
    */
-  resizeForm.onchange = function() {
+  resizeForm.addEventListener('change', function() {
     if (validate()) {
       filterImage.src = currentResizer.exportImage().src;
     }
-  };
+  });
   /**
    * Обработка отправки формы кадрирования. Если форма валидна, экспортирует
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
-  resizeForm.onsubmit = function(evt) {
+  resizeForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
     resizeForm.classList.add('invisible');
     filterForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
    */
-  filterForm.onreset = function(evt) {
+  filterForm.addEventListener('reset', function(evt) {
     evt.preventDefault();
 
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
-  filterForm.onsubmit = function(evt) {
+  filterForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
     saveSelectFilter();
 
@@ -307,13 +305,13 @@ function getTimeNearBirthDay() {
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Обработчик изменения фильтра. Добавляет класс из filterMap соответствующий
    * выбранному значению в форме.
    */
-  filterForm.onchange = function() {
+  filterForm.addEventListener('change', function() {
     if (!filterMap) {
       // Ленивая инициализация. Объект не создается до тех пор, пока
       // не понадобится прочитать его в первый раз, а после этого запоминается
@@ -333,7 +331,7 @@ function getTimeNearBirthDay() {
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
-  };
+  });
   //Устанавливаем фильтр, записанный в cookies, по умолчанию.
   function setDefaultFilter() {
     var controls = document.querySelector('.upload-filter-controls');
@@ -344,6 +342,32 @@ function getTimeNearBirthDay() {
 
   }
   setDefaultFilter();
+  /**
+   * Обработчик события. Берет значения смещения и размера кадра
+   * из объекта resizer и добавляет в формую
+   */
+  window.addEventListener('resizerchange', function() {
+    var resizer = currentResizer.getConstraint();
+    resizeXField.value = resizer.x;
+    resizeYField.value = resizer.y;
+    resizeSize.value = resizer.side;
+  });
+  /**делегирование событий resizeXField resizeYField resizeSize*/
+
+  resizeForm.addEventListener('input', function(evt) {
+    switch (evt.target.name) {
+      case 'x':
+      case 'y': currentResizer.setConstraint(toNumber(resizeXField.value), toNumber(resizeYField.value), toNumber(resizeSize.value));
+        break;
+      case 'size':
+        var resizer = currentResizer.getConstraint();
+        var newX = toNumber(resizeXField.value) + (toNumber(resizer.side) - toNumber(resizeSize.value)) / 2;
+        var newY = toNumber(resizeYField.value) + (toNumber(resizer.side) - toNumber(resizeSize.value)) / 2;
+        currentResizer.setConstraint(newX, newY, toNumber(resizeSize.value));
+        break;
+    }
+  });
+
   cleanupResizer();
   updateBackground();
 })();
