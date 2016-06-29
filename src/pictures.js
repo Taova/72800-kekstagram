@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Загрузка изображений
+ * @author Taova
+ */
+
 'use strict';
 /* global pictures*/
 /** @type {Array.<Object>} */
