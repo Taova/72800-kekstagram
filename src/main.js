@@ -17,7 +17,7 @@ var ACTIVE_FILTER_CLASSNAME = 'filter-active';
 var PAGE_SIZE = 12;
 /** @type {number} */
 var pageNumber = 0;
-
+var renderPhotos = [];
 
 /** @constant {number} */
 var THROTTLE_DELAY = 100;
@@ -31,8 +31,7 @@ var divContainer = document.querySelector('#no-filters');
 var load = require('./load');
 var filter = require('./filter/filter');
 var filterType = require('./filter/filter-type');
-var pictureRender = require('./picture/pictures');
-var getPicture = require('./picture/get-picture-elem');
+var PictureRender = require('./picture/pictures');
 var utils = require('./utils');
 var gallery = require('./gallery');
 
@@ -60,15 +59,17 @@ var setScrollEnabled = function() {
   */
 var renderPictures = function(pictures, page, replace) {
   if (replace) {
-    picturesContainer.innerHTML = '';
+    renderPhotos.forEach(function(photo) {
+      photo.remove();
+    });
+    renderPhotos = [];
   }
 
   var from = page * PAGE_SIZE;
   var to = from + PAGE_SIZE;
 
   pictures.slice(from, to).forEach(function(picture) {
-    getPicture(picture, picturesContainer);
-    pictureRender(picture, picturesContainer);
+    renderPhotos.push(new PictureRender(picture, picturesContainer));
   });
 
   // Если страница не заполненна
@@ -83,13 +84,6 @@ load(PICTURES_LOAD_URL, function(loadedPictures) {
   setFiltrationImg();
   setFiltrationImgId(DEFAULT_FILTER);
   setScrollEnabled();
-
-  picturesContainer.addEventListener('click', function(evt) {
-    evt.preventDefault();
-    if (evt.target.tagName === 'IMG') {
-      gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
-    }
-  });
 });
 // // Список изображений изменяется  в зависимости переданных значаний filterType
 // /** @param {string} filterType */
@@ -98,10 +92,8 @@ var setFiltrationImgId = function(typeFilter) {
   if (filterImage.length === 0) {
     sendEmptyBlock('no-filters', divContainer);
 
-  } else{
-    divContainer.innerHTML = '';
-    gallery.saveGallery(filterImage);
   }
+  gallery.saveGallery(filterImage);
   pageNumber = 0;
   renderPictures(filterImage, pageNumber, true);
 
@@ -131,4 +123,3 @@ var sendEmptyBlock = function(filterclass, container) {
   div.textContent = 'ERROR';
   container.appendChild(div);
 };
-
