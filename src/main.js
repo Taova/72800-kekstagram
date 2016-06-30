@@ -117,4 +117,3 @@ var sendEmptyBlock = function(filterclass, container) {
   div.textContent = 'ERROR';
   container.appendChild(div);
 };
-
