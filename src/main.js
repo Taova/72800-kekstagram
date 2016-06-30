@@ -4,13 +4,6 @@
 
 require('./resizer.js');
 require('./upload.js');
-var load = require('./load');
-var filter = require('./filter/filter');
-var filterType = require('./filter/filter-type');
-var pictureRender = require('./picture/pictures');
-var getPicture = require('./picture/get-picture-elem');
-var utils = require('./utils');
-var gallery = require('./gallery');
 
 /** @constant {string} */
 var CLASS_HIDDEN = 'hidden';
@@ -24,8 +17,7 @@ var ACTIVE_FILTER_CLASSNAME = 'filter-active';
 var PAGE_SIZE = 12;
 /** @type {number} */
 var pageNumber = 0;
-/** @constant {Filter} */
-var DEFAULT_FILTER = filterType.popular;
+
 
 /** @constant {number} */
 var THROTTLE_DELAY = 100;
@@ -35,6 +27,17 @@ var formFilters = document.querySelector('form.filters');
 
 var picturesContainer = document.querySelector('.pictures');
 var divContainer = document.querySelector('#no-filters');
+
+var load = require('./load');
+var filter = require('./filter/filter');
+var filterType = require('./filter/filter-type');
+var pictureRender = require('./picture/pictures');
+var getPicture = require('./picture/get-picture-elem');
+var utils = require('./utils');
+var gallery = require('./gallery');
+
+/** @constant {Filter} */
+var DEFAULT_FILTER = filterType.popular;
 
 utils.removeClassElem(formFilters, CLASS_HIDDEN);
 var setScrollEnabled = function() {
@@ -80,6 +83,13 @@ load(PICTURES_LOAD_URL, function(loadedPictures) {
   setFiltrationImg();
   setFiltrationImgId(DEFAULT_FILTER);
   setScrollEnabled();
+
+  picturesContainer.addEventListener('click', function(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName === 'IMG') {
+      gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
+    }
+  });
 });
 // // Список изображений изменяется  в зависимости переданных значаний filterType
 // /** @param {string} filterType */
