@@ -5,51 +5,9 @@
  */
 
 'use strict';
-/**
-  * Подключение зависимости библиотеки browser-cookies в переменную
-  */
-var browserCookies = require('browser-cookies');
-/**
-  * Преобразование в строку
-  */
-var toString = function(str) {
-  return '' + str;
-};
-/**
-  * Функция сохранения в cookies последний выбранный фильтр:
-  * «Оригинал», «Хром» или «Сепия»
-  */
-function saveSelectFilter() {
-  var selectFilter = document.querySelector('.upload-filter-controls input:checked');
-  var dateToExpires = new Date(Date.now() + getTimeNearBirthDay()).toUTCString();
-  browserCookies.set('filter', toString(selectFilter.value), {expires: dateToExpires});
-  // console.log(browserCookies.set('filter', toString(selectFilter.value), {expires: dateToExpires}));
-}
 
-/**
-  * Дата рождения @constant {date}
-  * Month от 0(ЯНВ) до 11 (ДЕК)
-  */
-var BIRTHDAY_DATE = new Date('1991', '3', '23');
-
-/**
-  * Функция вычисления количества дней с ближайщего дня рождения
-  */
-function getTimeNearBirthDay() {
-  var nowDate = new Date();
-  nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-  if (nowDate.getMonth() >= BIRTHDAY_DATE.getMonth()) {
-    if (nowDate.getDate() >= BIRTHDAY_DATE.getDate()) {
-      BIRTHDAY_DATE.setFullYear(nowDate.getFullYear());
-    } else {
-      BIRTHDAY_DATE.setFullYear(nowDate.getFullYear() - 1);
-    }
-  } else {
-    BIRTHDAY_DATE.setFullYear(nowDate.getFullYear() - 1);
-  }
-  return nowDate - BIRTHDAY_DATE;
-}
 (function() {
+  var utils = require('./utils');
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -117,7 +75,6 @@ function getTimeNearBirthDay() {
     }
     validate();
   };
-
   /**
     * Проверяет, валидны ли данные, в форме кадрирования.
     */
@@ -125,20 +82,16 @@ function getTimeNearBirthDay() {
   var resizeYField = formResize.querySelector('#resize-y');
   var resizeSize = formResize.querySelector('#resize-size');
   var submitButton = formResize.querySelector('#resize-fwd');
-
-  var toNumber = function(num) {
-    return parseInt(num, 10);
-  };
   /** Проверяем данные на следующие критерии:
   Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
   Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
   Поля «сверху» и «слева» не могут быть отрицательными.
   */
   var validate = function() {
-    if ((toNumber(resizeXField.value) + toNumber(resizeSize.value) > currentResizer._image.naturalWidth)
-    || (toNumber(resizeYField.value) + toNumber(resizeSize.value) > currentResizer._image.naturalHeigh)
-    || (toNumber(resizeXField.value) < 0)
-    || (toNumber(resizeYField.value) < 0)) {
+    if ((utils.toNumber(resizeXField.value) + utils.toNumber(resizeSize.value) > currentResizer._image.naturalWidth)
+    || (utils.toNumber(resizeYField.value) + utils.toNumber(resizeSize.value) > currentResizer._image.naturalHeigh)
+    || (utils.toNumber(resizeXField.value) < 0)
+    || (utils.toNumber(resizeYField.value) < 0)) {
 
       submitButton.setAttribute('disabled', 'true');
       submitButton.classList.add('btn-disabled');
@@ -206,7 +159,6 @@ function getTimeNearBirthDay() {
   function hideMessage() {
     uploadMessage.classList.add('invisible');
   }
-
   /**
    * Обработчик изменения изображения в форме загрузки. Если загруженный
    * файл является изображением, считывается исходник картинки, создается
@@ -245,7 +197,6 @@ function getTimeNearBirthDay() {
       }
     }
   });
-
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
@@ -298,7 +249,7 @@ function getTimeNearBirthDay() {
    */
   filterForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
-    saveSelectFilter();
+    utils.saveSelectFilter();
 
     cleanupResizer();
     updateBackground();
@@ -332,16 +283,7 @@ function getTimeNearBirthDay() {
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
   });
-  //Устанавливаем фильтр, записанный в cookies, по умолчанию.
-  function setDefaultFilter() {
-    var controls = document.querySelector('.upload-filter-controls');
-    var filterName = browserCookies.get('filter') || 'none';
-    var filterSelected = controls.querySelector('#upload-filter-' + filterName);
-
-    filterSelected.setAttribute('checked', true);
-
-  }
-  setDefaultFilter();
+  utils.setDefaultFilter();
   /**
    * Обработчик события. Берет значения смещения и размера кадра
    * из объекта resizer и добавляет в формую
@@ -357,13 +299,13 @@ function getTimeNearBirthDay() {
   resizeForm.addEventListener('input', function(evt) {
     switch (evt.target.name) {
       case 'x':
-      case 'y': currentResizer.setConstraint(toNumber(resizeXField.value), toNumber(resizeYField.value), toNumber(resizeSize.value));
+      case 'y': currentResizer.setConstraint(utils.toNumber(resizeXField.value), utils.toNumber(resizeYField.value), utils.toNumber(resizeSize.value));
         break;
       case 'size':
         var resizer = currentResizer.getConstraint();
-        var newX = toNumber(resizeXField.value) + (toNumber(resizer.side) - toNumber(resizeSize.value)) / 2;
-        var newY = toNumber(resizeYField.value) + (toNumber(resizer.side) - toNumber(resizeSize.value)) / 2;
-        currentResizer.setConstraint(newX, newY, toNumber(resizeSize.value));
+        var newX = utils.toNumber(resizeXField.value) + (utils.toNumber(resizer.side) - utils.toNumber(resizeSize.value)) / 2;
+        var newY = utils.toNumber(resizeYField.value) + (utils.toNumber(resizer.side) - utils.toNumber(resizeSize.value)) / 2;
+        currentResizer.setConstraint(newX, newY, utils.toNumber(resizeSize.value));
         break;
     }
   });
