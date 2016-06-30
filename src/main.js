@@ -4,14 +4,9 @@
 
 require('./resizer.js');
 require('./upload.js');
-var load = require('./load');
-var filter = require('./filter/filter');
-var filterType = require('./filter/filter-type');
-var pictureRender = require('./picture/pictures');
-var getPicture = require('./picture/get-picture-elem');
-var utils = require('./utils');
 
-
+/** @constant {string} */
+var CLASS_HIDDEN = 'hidden';
 /** @type {Array.<Object>} */
 var filterImage = [];
 /** @constant {string} */
@@ -22,8 +17,7 @@ var ACTIVE_FILTER_CLASSNAME = 'filter-active';
 var PAGE_SIZE = 12;
 /** @type {number} */
 var pageNumber = 0;
-/** @constant {Filter} */
-var DEFAULT_FILTER = filterType.popular;
+
 
 /** @constant {number} */
 var THROTTLE_DELAY = 100;
@@ -34,7 +28,18 @@ var formFilters = document.querySelector('form.filters');
 var picturesContainer = document.querySelector('.pictures');
 var divContainer = document.querySelector('#no-filters');
 
-utils.removeClassHidden(formFilters, true);
+var load = require('./load');
+var filter = require('./filter/filter');
+var filterType = require('./filter/filter-type');
+var pictureRender = require('./picture/pictures');
+var getPicture = require('./picture/get-picture-elem');
+var utils = require('./utils');
+var gallery = require('./gallery');
+
+/** @constant {Filter} */
+var DEFAULT_FILTER = filterType.popular;
+
+utils.removeClassElem(formFilters, CLASS_HIDDEN);
 var setScrollEnabled = function() {
   var lastCall = Date.now();
 
@@ -78,6 +83,13 @@ load(PICTURES_LOAD_URL, function(loadedPictures) {
   setFiltrationImg();
   setFiltrationImgId(DEFAULT_FILTER);
   setScrollEnabled();
+
+  picturesContainer.addEventListener('click', function(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName === 'IMG') {
+      gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
+    }
+  });
 });
 // // Список изображений изменяется  в зависимости переданных значаний filterType
 // /** @param {string} filterType */
@@ -85,8 +97,10 @@ var setFiltrationImgId = function(typeFilter) {
   filterImage = filter(pictures, typeFilter);
   if (filterImage.length === 0) {
     sendEmptyBlock('no-filters', divContainer);
+
   } else{
     divContainer.innerHTML = '';
+    gallery.saveGallery(filterImage);
   }
   pageNumber = 0;
   renderPictures(filterImage, pageNumber, true);
