@@ -16,10 +16,10 @@ var Gallery = function() {
   /** @param {Array.<string>}*/
   var galleryPhoto = [];
   var indexOfPhoto;
-  this.saveGalleryElement = function(data) {
+  Gallery.prototype.saveGalleryElement = function(data) {
     galleryPhoto = data;
   };
-  this.findIndexPhoto = function(urlToFind) {
+  Gallery.prototype.findIndexPhoto = function(urlToFind) {
     for (var i = 0; i < galleryPhoto.length; i++) {
       if (urlToFind === window.location.href + galleryPhoto[i].url) {
         indexOfPhoto = i;
@@ -28,7 +28,7 @@ var Gallery = function() {
     return indexOfPhoto;
   };
 
-  this.showGallery = function(index) {
+  Gallery.prototype.showGallery = function(index) {
     utils.removeClassElem(self.galleryContainer, 'invisible');
     self.showPhoto(index);
 
@@ -38,12 +38,12 @@ var Gallery = function() {
     self.galleryContainer.addEventListener('click', self.hideGallery);
     preview.addEventListener('click', self.prevClose);
   };
-  this.showPhoto = function(index) {
+  Gallery.prototype.showPhoto = function(index) {
     preview.src = galleryPhoto[index].url;
     like.innerHTML = galleryPhoto[index].likes;
     comments.innerHTML = galleryPhoto[index].comments;
   };
-  this.hideGallery = function() {
+  Gallery.prototype.hideGallery = function() {
     utils.addClassElem(self.galleryContainer, 'invisible');
 
     document.removeEventListener('keydown', self._onDocumentKeyDown);
@@ -53,7 +53,7 @@ var Gallery = function() {
     preview.removeEventListener('click', self.prevClose);
   };
 
-  this._onPhotoClick = function() {
+  Gallery.prototype._onPhotoClick = function() {
     if (indexOfPhoto > galleryPhoto.length - 2) {
       indexOfPhoto = 0;
     } else {
@@ -62,13 +62,13 @@ var Gallery = function() {
     self.showPhoto(indexOfPhoto);
   };
 
-  this._onDocumentKeyDown = function(evt) {
+  Gallery.prototype._onDocumentKeyDown = function(evt) {
     if (evt.keyCode === 27) {
       self.hideGallery();
     }
   };
 
-  this.prevClose = function(evt) {
+  Gallery.prototype.prevClose = function(evt) {
     evt.stopPropagation();
   };
 };
