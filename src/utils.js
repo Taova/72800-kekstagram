@@ -8,9 +8,19 @@
   */
 var browserCookies = require('browser-cookies');
 
-
+var KeyCode = {
+  ENTER: 13,
+  ESC: 27,
+  SPACE: 32
+};
 
 module.exports = {
+  isActivationEvent: function(evt) {
+    return [KeyCode.ENTER, KeyCode.SPACE].indexOf(evt.keyCode) > -1;
+  },
+  isDeactivationEvent: function(evt) {
+    return evt.keyCode === KeyCode.ESC;
+  },
   /** @return {boolean} */
   isBottomReached: function(elem) {
     var GAP = 100;
