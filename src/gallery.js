@@ -7,11 +7,12 @@
 var utils = require('./utils');
 
 var Gallery = function() {
-  var galleryContainer = document.querySelector('.gallery-overlay');
-  var preview = galleryContainer.querySelector('.gallery-overlay-image');
-  var closeBlock = galleryContainer.querySelector('.gallery-overlay-close');
-  var like = galleryContainer.querySelector('.likes-count');
-  var comments = galleryContainer.querySelector('.comments-count');
+  var self = this;
+  this.galleryContainer = document.querySelector('.gallery-overlay');
+  var preview = this.galleryContainer.querySelector('.gallery-overlay-image');
+  var closeBlock = this.galleryContainer.querySelector('.gallery-overlay-close');
+  var like = this.galleryContainer.querySelector('.likes-count');
+  var comments = this.galleryContainer.querySelector('.comments-count');
   /** @param {Array.<string>}*/
   var galleryPhoto = [];
   var indexOfPhoto;
@@ -28,46 +29,46 @@ var Gallery = function() {
   };
 
   this.showGallery = function(index) {
-    utils.removeClassElem(galleryContainer, 'invisible');
-    showPhoto(index);
+    utils.removeClassElem(self.galleryContainer, 'invisible');
+    self.showPhoto(index);
 
-    document.addEventListener('keydown', _onDocumentKeyDown);
-    preview.addEventListener('click', _onPhotoClick);
-    closeBlock.addEventListener('click', hideGallery);
-    galleryContainer.addEventListener('click', hideGallery);
-    preview.addEventListener('click', prevClose);
+    document.addEventListener('keydown', self._onDocumentKeyDown);
+    preview.addEventListener('click', self._onPhotoClick);
+    closeBlock.addEventListener('click', self.hideGallery);
+    self.galleryContainer.addEventListener('click', self.hideGallery);
+    preview.addEventListener('click', self.prevClose);
   };
-  var showPhoto = function(index) {
+  this.showPhoto = function(index) {
     preview.src = galleryPhoto[index].url;
     like.innerHTML = galleryPhoto[index].likes;
     comments.innerHTML = galleryPhoto[index].comments;
   };
-  var hideGallery = function() {
-    utils.addClassElem(galleryContainer, 'invisible');
+  this.hideGallery = function() {
+    utils.addClassElem(self.galleryContainer, 'invisible');
 
-    document.removeEventListener('keydown', _onDocumentKeyDown);
-    preview.removeEventListener('click', _onPhotoClick);
-    closeBlock.removeEventListener('click', hideGallery);
-    galleryContainer.removeEventListener('click', hideGallery);
-    preview.removeEventListener('click', prevClose);
+    document.removeEventListener('keydown', self._onDocumentKeyDown);
+    preview.removeEventListener('click', self._onPhotoClick);
+    closeBlock.removeEventListener('click', self.hideGallery);
+    self.galleryContainer.removeEventListener('click', self.hideGallery);
+    preview.removeEventListener('click', self.prevClose);
   };
 
-  var _onPhotoClick = function() {
+  this._onPhotoClick = function() {
     if (indexOfPhoto > galleryPhoto.length - 2) {
       indexOfPhoto = 0;
     } else {
       indexOfPhoto++;
     }
-    showPhoto(indexOfPhoto);
+    self.showPhoto(indexOfPhoto);
   };
 
-  var _onDocumentKeyDown = function(evt) {
+  this._onDocumentKeyDown = function(evt) {
     if (evt.keyCode === 27) {
-      hideGallery();
+      self.hideGallery();
     }
   };
 
-  var prevClose = function(evt) {
+  this.prevClose = function(evt) {
     evt.stopPropagation();
   };
 };

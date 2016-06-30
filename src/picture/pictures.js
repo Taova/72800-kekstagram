@@ -14,6 +14,7 @@ var utils = require('./../utils');
   * @constructor
   */
 var pictureRender = function(data, container) {
+  var self = this;
   this.data = data;
   this.element = getPicture(data, container);
   this.onPicturesClick = function(evt) {
@@ -31,12 +32,12 @@ var pictureRender = function(data, container) {
     }
   };
   this.remove = function() {
-    this.element.removeEventListener('click', this.onPicturesClick);
-    this.element.removeEventListener('keydown', this.onPicturesKeydown);
-    this.element.parentNode.removeChild(this.element);
+    this.element.removeEventListener('click', self.onPicturesClick);
+    this.element.removeEventListener('keydown', self.onPicturesKeydown);
+    this.element.parentNode.removeChild(self.element);
   };
-  this.element.addEventListener('click', this.onPicturesClick);
-  this.element.addEventListener('keydown', this.onPicturesKeydown);
+  this.element.addEventListener('click', self.onPicturesClick);
+  this.element.addEventListener('keydown', self.onPicturesKeydown);
   container.appendChild(this.element);
 };
 
