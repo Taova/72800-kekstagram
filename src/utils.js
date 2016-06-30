@@ -8,8 +8,7 @@
   */
 var browserCookies = require('browser-cookies');
 
-/** @constant {string} */
-var CLASS_HIDDEN = 'hidden';
+
 
 module.exports = {
   /** @return {boolean} */
@@ -58,8 +57,11 @@ module.exports = {
   toString: function(str) {
     return '' + str;
   },
-  removeClassHidden: function(container, hidden) {
-    container.classList.remove(CLASS_HIDDEN, hidden);
+  removeClassElem: function(container, hidden) {
+    container.classList.remove(hidden);
+  },
+  addClassElem: function(container, hidden) {
+    container.classList.add(hidden);
   }
 
 };

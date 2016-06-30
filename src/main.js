@@ -10,8 +10,10 @@ var filterType = require('./filter/filter-type');
 var pictureRender = require('./picture/pictures');
 var getPicture = require('./picture/get-picture-elem');
 var utils = require('./utils');
+var gallery = require('./gallery');
 
-
+/** @constant {string} */
+var CLASS_HIDDEN = 'hidden';
 /** @type {Array.<Object>} */
 var filterImage = [];
 /** @constant {string} */
@@ -34,7 +36,7 @@ var formFilters = document.querySelector('form.filters');
 var picturesContainer = document.querySelector('.pictures');
 var divContainer = document.querySelector('#no-filters');
 
-utils.removeClassHidden(formFilters, true);
+utils.removeClassElem(formFilters, CLASS_HIDDEN);
 var setScrollEnabled = function() {
   var lastCall = Date.now();
 
@@ -85,8 +87,10 @@ var setFiltrationImgId = function(typeFilter) {
   filterImage = filter(pictures, typeFilter);
   if (filterImage.length === 0) {
     sendEmptyBlock('no-filters', divContainer);
+
   } else{
     divContainer.innerHTML = '';
+    gallery.saveGallery(filterImage);
   }
   pageNumber = 0;
   renderPictures(filterImage, pageNumber, true);
@@ -117,3 +121,4 @@ var sendEmptyBlock = function(filterclass, container) {
   div.textContent = 'ERROR';
   container.appendChild(div);
 };
+

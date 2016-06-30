@@ -3,7 +3,6 @@
  * @author TAova
  */
 'use strict';
-
 var elementToClone;
 var templateElement = document.querySelector('#picture-template');
 
@@ -33,6 +32,7 @@ var getPicture = function(data) {
   elemImgData.onerror = function() {
     element.classList.add('picture-load-failure');
   };
+
   elemImgData.src = data.url;
   return element;
 };
