@@ -92,10 +92,8 @@ var setFiltrationImgId = function(typeFilter) {
   if (filterImage.length === 0) {
     sendEmptyBlock('no-filters', divContainer);
 
-  } else{
-    divContainer.innerHTML = '';
-    gallery.saveGallery(filterImage);
   }
+  gallery.saveGallery(filterImage);
   pageNumber = 0;
   renderPictures(filterImage, pageNumber, true);
 
