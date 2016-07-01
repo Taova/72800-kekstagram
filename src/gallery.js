@@ -26,6 +26,7 @@ var Gallery = function() {
 
 Gallery.prototype.saveGalleryElement = function(data) {
   this.galleryPhoto = data;
+  
 };
 Gallery.prototype.findIndexPhoto = function(urlToFind) {
   for (var i = 0; i < this.galleryPhoto.length; i++) {
@@ -62,12 +63,12 @@ Gallery.prototype.hideGallery = function() {
 };
 
 Gallery.prototype._onPhotoClick = function() {
-  if (indexOfPhoto > galleryPhoto.length - 2) {
-    indexOfPhoto = 0;
+  if (this.indexOfPhotoindexOfPhoto > this.galleryPhoto.length - 2) {
+    this.indexOfPhotoindexOfPhoto = 0;
   } else {
-    indexOfPhoto++;
+    this.indexOfPhoto++;
   }
-  this.showPhoto(indexOfPhoto);
+  this.showPhoto(this.indexOfPhoto);
 };
 
 Gallery.prototype._onDocumentKeyDown = function(evt) {
