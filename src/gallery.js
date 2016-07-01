@@ -25,7 +25,7 @@ var Gallery = function() {
 };
 
 Gallery.prototype.saveGalleryElement = function(data) {
-  this.galleryPhoto = data;
+  return this.galleryPhoto = data;
   
 };
 Gallery.prototype.findIndexPhoto = function(urlToFind) {
@@ -48,6 +48,7 @@ Gallery.prototype.showGallery = function(index) {
   this.preview.addEventListener('click', this.prevClose);
 };
 Gallery.prototype.showPhoto = function(index) {
+  console.log(this.galleryPhoto);
   this.preview.src = this.galleryPhoto[index].url;
   this.like.innerHTML = this.galleryPhoto[index].likes;
   this.comments.innerHTML = this.galleryPhoto[index].comments;
