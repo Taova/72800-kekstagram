@@ -19,9 +19,6 @@ var Gallery = function() {
 
   this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   this._onPhotoClick = this._onPhotoClick.bind(this);
-  this.showGallery = this.showGallery.bind(this);
-  this.hideGallery = this.hideGallery.bind(this);
-  this.prevClose = this.prevClose.bind(this);
 };
 
 Gallery.prototype.saveGalleryElement = function(data) {
