@@ -7,12 +7,17 @@
   * Подключение зависимости библиотеки browser-cookies в переменную
   */
 var browserCookies = require('browser-cookies');
-
+var filterType = require('./filter/filter-type');
+var filter = require('./filter/filter');
 var KeyCode = {
   ENTER: 13,
   ESC: 27,
   SPACE: 32
 };
+
+
+var filterContainer = document.querySelector('.filters');
+var filtersCollection = filterContainer['filter'];
 
 module.exports = {
   isActivationEvent: function(evt) {
@@ -72,6 +77,22 @@ module.exports = {
   },
   addClassElem: function(container, hidden) {
     container.classList.add(hidden);
+  },
+  /**add */
+  getFilterActive: function() {
+    if (defaultFilter === null) {
+      defaultFilter = filterType.popular;
+    }
+    var defaultFilter = localStorage.getItem('filterChecked');
+    [].filter.call(filtersCollection, function(item) {
+      if (item.id === defaultFilter) {
+        item.setAttribute('checked', 'checked');
+        
+      }
+    });
+    
+    return defaultFilter;
+
   }
 
 };
