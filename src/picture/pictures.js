@@ -31,7 +31,7 @@ var pictureRender = function(data, container) {
 pictureRender.prototype.onPicturesClick = function(evt) {
   evt.preventDefault();
   if (evt.target.tagName === 'IMG') {
-    gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
+    gallery.showGallery();
   }
 };
 
@@ -39,7 +39,7 @@ pictureRender.prototype.onPicturesKeydown = function(evt) {
   if (utils.isActivationEvent(evt)) {
     if (evt.target.classList.contains('picture')) {
       evt.preventDefault();
-      gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
+      gallery.showGallery();
     }
   }
 };
