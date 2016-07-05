@@ -94,7 +94,7 @@ var setFiltrationImgId = function(typeFilter) {
     sendEmptyBlock('no-filters', divContainer);
 
   }
-  gallery.saveGallery(filterImage);
+  gallery.saveGalleryElement(filterImage);
   pageNumber = 0;
   renderPictures(filterImage, pageNumber, true);
 };

@@ -19,14 +19,18 @@ var pictureRender = function(data, container) {
   this.onPicturesClick = function(evt) {
     evt.preventDefault();
     if (evt.target.tagName === 'IMG') {
-      gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
+      var returnIndex = gallery.findIndexPhoto(evt.target.src);      
+      gallery.showPhoto(returnIndex);
+      gallery.showGallery(returnIndex);
     }
   };
   this.onPicturesKeydown = function(evt) {
     if (utils.isActivationEvent(evt)) {
       if (evt.target.classList.contains('picture')) {
         evt.preventDefault();
-        gallery.showGallery(gallery.findIndexPhoto(evt.target.src));
+        var returnIndex = gallery.findIndexPhoto(evt.target.src);
+        gallery.showPhoto(returnIndex);
+        gallery.showGallery(returnIndex);
       }
     }
   };
