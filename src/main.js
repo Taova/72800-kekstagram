@@ -81,6 +81,11 @@ load(PICTURES_LOAD_URL, function(loadedPictures) {
   window.pictures = loadedPictures;
   setFiltrationImg();
   setFiltrationImgId(DEFAULT_FILTER);
+  if (location.hash !== '') {
+    gallery.showGallery();
+  } else {
+    location.hash = '';
+  }
   setScrollEnabled();
 });
 // Список изображений изменяется  в зависимости переданных значаний filterType

@@ -13,6 +13,7 @@ var Gallery = function() {
   this.like = this.galleryContainer.querySelector('.likes-count');
   this.comments = this.galleryContainer.querySelector('.comments-count');
 
+
   this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   this._onPhotoClick = this._onPhotoClick.bind(this);
   this.hideGallery = this.hideGallery.bind(this);
@@ -20,6 +21,7 @@ var Gallery = function() {
 
 Gallery.prototype.saveGalleryElement = function(data) {
   this.data = data;
+  
 };
 Gallery.prototype.showPhoto = function(index) {
   var photo = this.data[index];
@@ -28,19 +30,20 @@ Gallery.prototype.showPhoto = function(index) {
   this.comments.textContent = photo.comments;
 };
 
-Gallery.prototype.findIndexPhoto = function(urlToFind) {
-  for (var i = 0; i < this.data.length; i++) {
-    if (urlToFind === window.location.href + this.data[i].url) {
-      this.indexOfPhoto = i;
-    }
-  }
-  return this.indexOfPhoto;
-};
+// Gallery.prototype.findIndexPhoto = function(urlToFind) {
+//   for (var i = 0; i < this.data.length; i++) {
+//     if (urlToFind === window.location.href + this.data[i].url) {
+//       this.indexOfPhoto = i;
+//     }
+//   }
+//   return this.indexOfPhoto;
+// };
 
 
 Gallery.prototype.showGallery = function() {
   var galleryContainer = document.querySelector('.gallery-overlay');
   utils.removeClassElem(galleryContainer, 'invisible');
+
   document.addEventListener('keydown', this._onDocumentKeyDown);
   this.preview.addEventListener('click', this._onPhotoClick);
   this.closeBlock.addEventListener('click', this.hideGallery);
@@ -67,6 +70,7 @@ Gallery.prototype.prevClose = function(evt) {
 };
 Gallery.prototype.hideGallery = function() {
   utils.addClassElem(this.galleryContainer, 'invisible');
+  location.hash = '';
 
   document.removeEventListener('keydown', this._onDocumentKeyDown);
   this.preview.removeEventListener('click', this._onPhotoClick);
@@ -74,7 +78,25 @@ Gallery.prototype.hideGallery = function() {
   this.galleryContainer.removeEventListener('click', this.hideGallery);
   this.preview.removeEventListener('click', this.prevClose);
 };
+Gallery.prototype.hashChange = function() {
+  var hash = window.location.hash;
+  var getPhotoRegExp = /#photo\/(\S+)/.exec(hash);
+  if (getPhotoRegExp) {
+    if (this.picturesSrc.indexOf(getPhotoRegExp[1]) > -1) {
+      this.showGallery(getPhotoRegExp[1]);
+    } else {
+      this.hideGallery();
+    }
+  } else {
+    location.hash = '';
+  }
 
+};
+Gallery.prototype.getContentHash = function() {
+  if (location.hash !== '') {
+    this.hashChange();
+  }
+};
 
 
 var picturesGallery = new Gallery();
