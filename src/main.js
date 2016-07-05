@@ -113,10 +113,10 @@ var setFiltrationImg = function() {
     }
   });
 };
-// /**
-//  * @param {string>} class
-//  * @param {string} container
-//  */
+/**
+ * @param {string>} class
+ * @param {string} container
+ */
 var sendEmptyBlock = function(filterclass, container) {
   var div = document.createElement('div');
   div.classList.add(filterclass);
