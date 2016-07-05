@@ -38,7 +38,7 @@ Gallery.prototype.findIndexPhoto = function(urlToFind) {
 };
 
 
-Gallery.prototype.showGallery = function(index) {
+Gallery.prototype.showGallery = function() {
   var galleryContainer = document.querySelector('.gallery-overlay');
   utils.removeClassElem(galleryContainer, 'invisible');
 
@@ -48,11 +48,11 @@ Gallery.prototype.showGallery = function(index) {
   this.galleryContainer.addEventListener('click', this.hideGallery);
   this.preview.addEventListener('click', this.prevClose);
 };
+
 Gallery.prototype._onPhotoClick = function() {
   if (this.indexOfPhoto > this.data.length - 2) {
     this.indexOfPhoto = 0;
   }
-  
   this.indexOfPhoto++;
   this.showPhoto(this.indexOfPhoto);
 };

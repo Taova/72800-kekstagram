@@ -19,9 +19,9 @@ var pictureRender = function(data, container) {
   this.onPicturesClick = function(evt) {
     evt.preventDefault();
     if (evt.target.tagName === 'IMG') {
-      var returnIndex = gallery.findIndexPhoto(evt.target.src);      
+      var returnIndex = gallery.findIndexPhoto(evt.target.src);
       gallery.showPhoto(returnIndex);
-      gallery.showGallery(returnIndex);
+      gallery.showGallery();
     }
   };
   this.onPicturesKeydown = function(evt) {
@@ -30,7 +30,7 @@ var pictureRender = function(data, container) {
         evt.preventDefault();
         var returnIndex = gallery.findIndexPhoto(evt.target.src);
         gallery.showPhoto(returnIndex);
-        gallery.showGallery(returnIndex);
+        gallery.showGallery();
       }
     }
   };

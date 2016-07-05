@@ -11,8 +11,6 @@ var CLASS_HIDDEN = 'hidden';
 var filterImage = [];
 /** @constant {string} */
 var PICTURES_LOAD_URL = '//o0.github.io/assets/json/pictures.json';
-/** @constant {string} */
-var ACTIVE_FILTER_CLASSNAME = 'filter-active';
 /** @constant {number} */
 var PAGE_SIZE = 12;
 /** @type {number} */
@@ -30,7 +28,6 @@ var divContainer = document.querySelector('#no-filters');
 
 var load = require('./load');
 var filter = require('./filter/filter');
-var filterType = require('./filter/filter-type');
 var PictureRender = require('./picture/pictures');
 var utils = require('./utils');
 var gallery = require('./gallery');

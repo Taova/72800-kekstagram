@@ -8,7 +8,6 @@
   */
 var browserCookies = require('browser-cookies');
 var filterType = require('./filter/filter-type');
-var filter = require('./filter/filter');
 var KeyCode = {
   ENTER: 13,
   ESC: 27,
@@ -87,10 +86,8 @@ module.exports = {
     [].filter.call(filtersCollection, function(item) {
       if (item.id === defaultFilter) {
         item.setAttribute('checked', 'checked');
-        
       }
     });
-    
     return defaultFilter;
 
   }
