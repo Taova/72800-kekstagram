@@ -41,7 +41,6 @@ Gallery.prototype.findIndexPhoto = function(urlToFind) {
 Gallery.prototype.showGallery = function() {
   var galleryContainer = document.querySelector('.gallery-overlay');
   utils.removeClassElem(galleryContainer, 'invisible');
-
   document.addEventListener('keydown', this._onDocumentKeyDown);
   this.preview.addEventListener('click', this._onPhotoClick);
   this.closeBlock.addEventListener('click', this.hideGallery);
