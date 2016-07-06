@@ -12,38 +12,37 @@ var Gallery = function() {
   this.closeBlock = this.galleryContainer.querySelector('.gallery-overlay-close');
   this.like = this.galleryContainer.querySelector('.likes-count');
   this.comments = this.galleryContainer.querySelector('.comments-count');
-
-
+  this.data = [];
+  this.indexOfPhoto = 0;
+  this.picturesSrc = [];
   this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   this._onPhotoClick = this._onPhotoClick.bind(this);
   this.hideGallery = this.hideGallery.bind(this);
+  this.saveGalleryElement = this.saveGalleryElement.bind(this);
+  window.addEventListener('hashchange', this.hashChange.bind(this));
 };
 
 Gallery.prototype.saveGalleryElement = function(data) {
-  this.data = data;
-  
+  if (data !== this.data) {
+    this.data = [];
+    this.picturesSrc = [];
+    this.data = data;
+    data.forEach(function(pic) {
+      this.picturesSrc.push(pic.url);
+    }, this);
+  }
 };
-Gallery.prototype.showPhoto = function(index) {
-  var photo = this.data[index];
-  this.preview.src = photo.url;
-  this.like.textContent = photo.likes;
-  this.comments.textContent = photo.comments;
+Gallery.prototype.showPhoto = function(photo) {
+  this.indexOfPhoto = this.picturesSrc.indexOf(photo);
+  this.preview.src = this.data[this.indexOfPhoto].url;
+  this.like.textContent = this.data[this.indexOfPhoto].likes;
+  this.comments.textContent = this.data[this.indexOfPhoto].comments;
 };
 
-// Gallery.prototype.findIndexPhoto = function(urlToFind) {
-//   for (var i = 0; i < this.data.length; i++) {
-//     if (urlToFind === window.location.href + this.data[i].url) {
-//       this.indexOfPhoto = i;
-//     }
-//   }
-//   return this.indexOfPhoto;
-// };
-
-
-Gallery.prototype.showGallery = function() {
+Gallery.prototype.showGallery = function(photo) {
   var galleryContainer = document.querySelector('.gallery-overlay');
   utils.removeClassElem(galleryContainer, 'invisible');
-
+  this.showPhoto(photo);
   document.addEventListener('keydown', this._onDocumentKeyDown);
   this.preview.addEventListener('click', this._onPhotoClick);
   this.closeBlock.addEventListener('click', this.hideGallery);
@@ -52,11 +51,12 @@ Gallery.prototype.showGallery = function() {
 };
 
 Gallery.prototype._onPhotoClick = function() {
-  if (this.indexOfPhoto > this.data.length - 2) {
+  this.indexOfPhoto++;
+  if (this.indexOfPhoto === this.data.length) {
     this.indexOfPhoto = 0;
   }
-  this.indexOfPhoto++;
-  this.showPhoto(this.indexOfPhoto);
+  var nextpicturesSrc = this.picturesSrc[this.indexOfPhoto];
+  window.location.hash = '#photo/' + nextpicturesSrc;
 };
 
 Gallery.prototype._onDocumentKeyDown = function(evt) {
