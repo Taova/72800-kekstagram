@@ -64,7 +64,6 @@ Gallery.prototype._onDocumentKeyDown = function(evt) {
     this.hideGallery();
   }
 };
-
 Gallery.prototype.prevClose = function(evt) {
   evt.stopPropagation();
 };
