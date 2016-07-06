@@ -21,10 +21,7 @@ var renderPhotos = [];
 var THROTTLE_DELAY = 100;
 var footerElement = document.querySelector('footer');
 var formFilters = document.querySelector('form.filters');
-
-
 var picturesContainer = document.querySelector('.pictures');
-var divContainer = document.querySelector('#no-filters');
 
 var load = require('./load');
 var filter = require('./filter/filter');
@@ -36,7 +33,10 @@ var gallery = require('./gallery');
 /** add*/
 var DEFAULT_FILTER = utils.getFilterActive();
 
-utils.removeClassElem(formFilters, CLASS_HIDDEN);
+if (formFilters) {
+  utils.removeClassElem(formFilters, CLASS_HIDDEN);
+}
+
 var setScrollEnabled = function() {
   var lastCall = Date.now();
 
@@ -81,14 +81,16 @@ load(PICTURES_LOAD_URL, function(loadedPictures) {
   window.pictures = loadedPictures;
   setFiltrationImg();
   setFiltrationImgId(DEFAULT_FILTER);
+  gallery.hashChange();
   setScrollEnabled();
 });
 // Список изображений изменяется  в зависимости переданных значаний filterType
 /** @param {string} filterType */
 var setFiltrationImgId = function(typeFilter) {
+  picturesContainer.classList.remove('no-filters');
   filterImage = filter(pictures, typeFilter);
   if (filterImage.length === 0) {
-    sendEmptyBlock('no-filters', divContainer);
+    picturesContainer.classList.add('no-filters');
 
   }
   gallery.saveGalleryElement(filterImage);
@@ -105,14 +107,4 @@ var setFiltrationImg = function() {
       setFiltrationImgId(evt.target.id);
     }
   });
-};
-/**
- * @param {string>} class
- * @param {string} container
- */
-var sendEmptyBlock = function(filterclass, container) {
-  var div = document.createElement('div');
-  div.classList.add(filterclass);
-  div.textContent = 'ERROR';
-  container.appendChild(div);
 };

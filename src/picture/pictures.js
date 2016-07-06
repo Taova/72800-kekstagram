@@ -5,7 +5,6 @@
 
 'use strict';
 var getPicture = require('./get-picture-elem');
-var gallery = require('./../gallery');
 var utils = require('./../utils');
 
 /**
@@ -19,18 +18,15 @@ var pictureRender = function(data, container) {
   this.onPicturesClick = function(evt) {
     evt.preventDefault();
     if (evt.target.tagName === 'IMG') {
-      var returnIndex = gallery.findIndexPhoto(evt.target.src);
-      gallery.showPhoto(returnIndex);
-      gallery.showGallery();
+      evt.preventDefault();
+      location.hash = '#photo/' + data.url;
     }
   };
   this.onPicturesKeydown = function(evt) {
     if (utils.isActivationEvent(evt)) {
       if (evt.target.classList.contains('picture')) {
         evt.preventDefault();
-        var returnIndex = gallery.findIndexPhoto(evt.target.src);
-        gallery.showPhoto(returnIndex);
-        gallery.showGallery();
+        location.hash = '#photo/' + data.url;
       }
     }
   };
